@@ -1,17 +1,20 @@
-var userModel = {}
+const userModel = {}
 
 const mongoose = require('mongoose')
+const email = require('nodemailer');
 
 const Schema = mongoose.Schema;
 var UserSchema = new Schema({
-    nombre:String
+    nombre:String,
+    email:String,
+    password:String
 })
 
 const Mymodel = mongoose.model('usuarios', UserSchema)
 
 userModel.List = function(post,callback){
 
-    Mymodel.find({},{nombre:1,_id:1},(error,documentos) => {
+    Mymodel.find({},{nombre:1,_id:1,email:1},(error,documentos) => {
         if(error){
             console.log(error)
             return callback(error)
@@ -24,7 +27,7 @@ userModel.List = function(post,callback){
 
 userModel.ListId = function(post,callback){
 
-    Mymodel.find({_id:post.id},{nombre:1,_id:1},(error,documentos) => {
+    Mymodel.find({_id:post.id},{nombre:1,_id:1,email:1},(error,documentos) => {
         if(error){
             console.log(error)
             return callback(error)
@@ -35,10 +38,12 @@ userModel.ListId = function(post,callback){
     })
 }
 
-userModel.Guardar = function(post,callback){
+userModel.Save = function(post,callback){
 
     const user = new Mymodel
     user.nombre = post.nombre
+    user.email = post.email
+    user.password = post.password
     user.save((error,userCreate) => {
         if(error){
             console.log(error)
@@ -68,6 +73,7 @@ userModel.Update = function(post,callback){
 }
 
 userModel.Delete = function(post,callback){
+
     Mymodel.findByIdAndDelete(post.id,(error,eliminado) =>{
         if(error){
             console.log(error)
@@ -79,4 +85,34 @@ userModel.Delete = function(post,callback){
     })
 }
 
+userModel.Login = function(post,callback){
+
+    Mymodel.find({email:post.email},{_id:1,password:1},(error,documentos) => {
+        if(error){
+            console.log(error)
+            return callback(error)
+        }
+        else{
+            return callback(documentos)
+        }
+    })
+
+}
+
+/*userModel.Forgot = function(post,callback){
+
+    Mymodel.find({email:post.email},{_id:1,email:1},(error,documentos) => {
+        if(error){
+            console.log(error)
+            return callback(error)
+        }
+        else{
+            
+            return callback(documentos)
+            
+        }
+    })
+}*/
+
+//userModel.sendEmail =  function(post,callback){}
 module.exports.users = userModel

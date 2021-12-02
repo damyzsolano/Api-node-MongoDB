@@ -1,7 +1,7 @@
 var express = require('express')
 global.app = express()
 global.config= require('./config.js').cofig
-
+global.sha256 = require('sha256')
 const mongoose = require('mongoose')
 
 var bodyParser = require('body-parser')
@@ -13,7 +13,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/' + config.bd,{useNewurlParser:true,
         console.log(error)
     }
     else{
-        console.log('exito')
+        console.log('Conexion a mongo exitoso')
     }
 })
 
